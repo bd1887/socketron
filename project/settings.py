@@ -35,11 +35,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'notagoodkey',
 DEBUG = True
 
 ALLOWED_HOSTS = []
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://localhost:8000',
-    'http://localhost:8080',
-]
 
 # Application definition
 
@@ -52,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
     'api',
     'chat',
 ]
