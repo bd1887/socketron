@@ -72,4 +72,4 @@ newrelic.ini
 .vagrant
 media
 coverage
-frontend
+/frontend/
