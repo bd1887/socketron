@@ -12,6 +12,15 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+# OAuth Keys
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+WELL_KNOWN_URL = 'https://id.twitch.tv/oauth2/keys'
+
+# Bot Credentials
+BOT_USERNAME = 'bot_test1887'
+OAUTH_TOKEN = os.environ.get('OAUTH_TOKEN')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*@)-dj-&03-jidnpo!$$a^4$o5_&y9pnn!3bo2g5el!s(755#m'
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'notagoodkey',
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,6 +44,7 @@ CORS_ORIGIN_WHITELIST = [
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'api',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +86,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
+
+# Channels
+ASGI_APPLICATION = 'project.routing.application'
 
 
 # Database
