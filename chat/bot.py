@@ -4,8 +4,8 @@ class Bot:
 
     def get_response(self, msg):
         for chat_response in self.chat_responses:
-            if chat_response.input == msg.text:
+            if chat_response.input == msg:
                 return chat_response.output
 
-        if msg.text == 'Hi, Bot!':
+        if msg == 'Hi, Bot!':
             return 'Hello, Human!'

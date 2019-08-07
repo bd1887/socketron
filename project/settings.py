@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'notagoodkey',
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.imugi.io']
+ALLOWED_HOSTS = ['localhost', '.imugi.io']
 
 # Application definition
 
