@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound 
+from rest_framework.exceptions import NotFound, NotAuthenticated
 from rest_framework import status
 from api.models import Twitch_User, ChatResponse
 from .serializers import ChatResponseSerializer
@@ -49,16 +49,21 @@ def oauth_redirect(request):
 class ChatResponseViewSet(ViewSet):
 
     def list(self, request):
-        twitch_id = self.id_from_token(request)
+        try:
+            twitch_id = self.id_from_token(request)
+        except:
+            return NotAuthenticated()
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         if not queryset:
-            return Response([])
+            raise NotFound()
         serializer = ChatResponseSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
         twitch_id = self.id_from_token(request)
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
+        if not queryset:
+                raise NotFound()
         chat_response = get_object_or_404(queryset, pk=pk)
         serializer = ChatResponseSerializer(chat_response)
         return Response(serializer.data)
