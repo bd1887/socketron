@@ -19,6 +19,7 @@ def index(request):
 def oauth_redirect(request):
     # Retrieve request token from parameters
     request_token = request.GET.get('code')
+    return JsonResponse({'code:': request_token})
     
     # Request user's info from Twitch
     redirect_uri = 'http://localhost:3000/oauth/redirect' if settings.RUNNING_DEVSERVER else 'https://www.imugi.io/oauth/redirect'
