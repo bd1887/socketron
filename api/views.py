@@ -52,7 +52,7 @@ class ChatResponseViewSet(ViewSet):
         try:
             twitch_id = self.id_from_token(request)
         except:
-            return NotAuthenticated()
+            raise NotAuthenticated()
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         if not queryset:
             raise NotFound()
@@ -63,7 +63,7 @@ class ChatResponseViewSet(ViewSet):
         twitch_id = self.id_from_token(request)
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         if not queryset:
-                raise NotFound()
+            raise NotFound()
         chat_response = get_object_or_404(queryset, pk=pk)
         serializer = ChatResponseSerializer(chat_response)
         return Response(serializer.data)
