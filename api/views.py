@@ -21,9 +21,8 @@ def oauth_redirect(request):
     request_token = request.GET.get('code')
     
     # Request user's info from Twitch
-    redirect_uri = 'http://localhost:3000/oauth/redirect' if settings.RUNNING_DEVSERVER else 'https://www.imugi.io/oauth/redirect'
+    redirect_uri = 'http://localhost:3000/oauth/redirect' if settings.RUNNING_DEVSERVER else 'https://www.imugi.io/socketron/oauth/redirect'
     oauth_url = f'https://id.twitch.tv/oauth2/token?client_id={settings.CLIENT_ID}&client_secret={settings.CLIENT_SECRET}&code={request_token}&grant_type=authorization_code&redirect_uri={redirect_uri}'
-    return JsonResponse({'code:': oauth_url})
     r = requests.post(oauth_url)
     
     if r.status_code == 200:
