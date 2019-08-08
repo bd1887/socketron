@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound 
 from rest_framework import status
 from api.models import Twitch_User, ChatResponse
 from .serializers import ChatResponseSerializer
@@ -50,6 +51,8 @@ class ChatResponseViewSet(ViewSet):
     def list(self, request):
         twitch_id = self.id_from_token(request)
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
+        if not queryset:
+            return Response([])
         serializer = ChatResponseSerializer(queryset, many=True)
         return Response(serializer.data)
 
