@@ -38,7 +38,7 @@ def oauth_redirect(request):
 
         except:
             # TODO: Render an authentication error here instead
-            return render(request, 'smart_response/dashboard.html')
+            return JsonResponse({'message:': r.text})
 
     else:
         # TODO: Render an authentication error here instead
