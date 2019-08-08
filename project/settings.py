@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sys
 
 # OAuth Keys
 CLIENT_ID = os.environ.get('CLIENT_ID')
@@ -20,6 +21,9 @@ WELL_KNOWN_URL = 'https://id.twitch.tv/oauth2/keys'
 # Bot Credentials
 BOT_USERNAME = 'bot_test1887'
 OAUTH_TOKEN = os.environ.get('OAUTH_TOKEN')
+
+# Is running in development
+RUNNING_DEVSERVER = (len(sys.argv) > 1 and sys.argv[1] == 'runserver')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,7 +38,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'notagoodkey',
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '.imugi.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.imugi.io']
 
 # Application definition
 
