@@ -86,7 +86,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 # Channels
-ASGI_APPLICATION = 'project.routing.application'
+ASGI_APPLICATION = 'routing.application'
 
 
 # Database
