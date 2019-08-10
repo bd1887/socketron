@@ -15,14 +15,15 @@ def verify_and_decode_jwt(id_token):
 
         # Verify and decode ID Token from public key
         try:
-            print('Verifying id token...')
+            print('Verifying id token for audience:')
+            print(settings.CLIENT_ID)
             public_key = RSAAlgorithm.from_jwk(keys)
             decoded = jwt.decode(id_token, public_key, algorithms='RS256', audience=settings.CLIENT_ID, options={'verify_exp': False})
             return decoded
 
         except Exception as e:
             print('Couldnt verify id token')
-            print(e.message)
+            print(str(e))
             # TODO: Raise appropriate error
             return None
     else:
