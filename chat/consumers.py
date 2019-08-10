@@ -8,6 +8,11 @@ from api.utils import verify_and_decode_jwt
 from api.models import Twitch_User, ChatResponse
 from chat.twitch_irc import TwitchIrc
 
+class TestConsumer(WebsocketConsumer):
+    def connect(self):
+        print('CONNECTED!')
+        self.accept()
+
 class ChatConsumer(WebsocketConsumer):
 
     def connect(self):
