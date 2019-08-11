@@ -29,8 +29,7 @@ class TwitchIrc:
 
     def _parse_message(self, resp):
         if resp.startswith(':tmi.twitch.tv'):
-            print('Official Babble')
-            return ''
+            pass
         else:
             try:
                 username, channel, message = re.search(':(.*)\!.*@.*\.tmi\.twitch\.tv PRIVMSG #(.*) :(.*)', resp).groups()

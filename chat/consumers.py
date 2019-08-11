@@ -14,6 +14,9 @@ class ChatConsumer(WebsocketConsumer):
         # TODO: Find a more sensible authentication strategy using twitch 'sub' id perhaps
         decoded = verify_and_decode_jwt(self.scope['cookies']['token'])
         if decoded['preferred_username'] == self.scope['url_route']['kwargs']['room_name']:
+            # Accept connection
+            self.accept()
+            
             # Get user
             self.user_id = decoded['sub']
             self.twitch_user = Twitch_User.objects.get(pk=self.user_id)
@@ -28,10 +31,6 @@ class ChatConsumer(WebsocketConsumer):
             # Start a Twitch Chat listener on user's channel
             self.twitch_chat = TwitchIrc(self.channel)
             self.twitch_chat.listen(lambda msg: self.message(msg))
-
-            # Accept connection
-            self.accept()
-
 
     def disconnect(self, close_code):
         self.close()
