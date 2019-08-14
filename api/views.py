@@ -1,12 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, NotAuthenticated
+from rest_framework.exceptions import NotFound, NotAuthenticated, ValidationError
 from rest_framework import status
 from api.models import Twitch_User, ChatResponse
 from .serializers import ChatResponseSerializer
-from api.utils import verify_and_decode_jwt
+from api.utils import verify_and_decode_jwt, get_id_from_request
 from django.conf import settings
 import requests
 import json
@@ -49,10 +49,13 @@ def oauth_redirect(request):
 class ChatResponseViewSet(ViewSet):
 
     def list(self, request):
+        # Get Twitch ID from jwt in request cookies
         try:
-            twitch_id = self.id_from_token(request)
+            twitch_id = get_id_from_request(request)
         except:
             raise NotAuthenticated()
+
+        # Get chat responses belonging to user and return
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         if not queryset:
             raise NotFound()
@@ -60,35 +63,55 @@ class ChatResponseViewSet(ViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        twitch_id = self.id_from_token(request)
+        # Get Twitch ID from jwt in request cookies
+        try:
+            twitch_id = get_id_from_request(request)
+        except:
+            raise NotAuthenticated()
+        
+        # Get chat responses belonging to user
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         if not queryset:
             raise NotFound()
+
+        # 404 if no chat response found else return response
         chat_response = get_object_or_404(queryset, pk=pk)
         serializer = ChatResponseSerializer(chat_response)
         return Response(serializer.data)
 
     def create(self, request):
-        twitch_id = self.id_from_token(request)
+        # Get Twitch ID from jwt in request cookies
+        try:
+            twitch_id = get_id_from_request(request)
+        except:
+            raise NotAuthenticated()
+
+        # Get User object from id
         twitch_user = Twitch_User.objects.get(pk=twitch_id)
+
+        # Extract input and output from POST request data
         input = request.data['input']
         output = request.data['output']
+
+        # Validate data and create return response, else raise BadRequest exception
         serializer = ChatResponseSerializer(data={'input': input, 'output': output, 'twitch_user': twitch_user})
-        print(serializer.is_valid())
         if serializer.is_valid():
             chat_response = ChatResponse(input=input, output=output, twitch_user=twitch_user)
             chat_response.save()
-        return Response(serializer.data)
+            return Response(serializer.data)
+        else:
+            raise ValidationError()
 
     def delete(self, request, pk=None):
-        twitch_id = self.id_from_token(request)
+        # Get Twitch ID from jwt in request cookies
+        try:
+            twitch_id = get_id_from_request(request)
+        except:
+            raise NotAuthenticated()
+
+        # Get chat responses belonging to user and delete
         queryset = ChatResponse.objects.filter(twitch_user=twitch_id)
         chat_response = get_object_or_404(queryset, pk=pk)
         chat_response.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def id_from_token(self, request):
-        token = self.request.COOKIES.get('token')
-        decoded = verify_and_decode_jwt(token)
-        twitch_id = decoded['sub']
-        return twitch_id
+        return Response(status=status.HTTP_204_NO_CONTENT)

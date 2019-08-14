@@ -22,3 +22,12 @@ def verify_and_decode_jwt(id_token):
     else:
         return None
         # TODO: Raise appropriate error
+
+def get_id_from_request(request):
+    # Extract jwt from request cookies and decode
+    token = request.COOKIES.get('token')
+    decoded = verify_and_decode_jwt(token)
+
+    # Extract and return Twitch ID portion
+    twitch_id = decoded['sub']
+    return twitch_id
